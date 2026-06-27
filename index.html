@@ -17,78 +17,6 @@
 
     const Bidster = () => {
       const projectTypes = {
-        bathroom: {
-          label: 'Bathroom',
-          color: 'bg-blue-100 border-blue-300',
-          items: [
-            'Toilet',
-            'Sink/vanity',
-            'Tub/shower',
-            'Exhaust ventilation',
-            'Water supply lines',
-            'Drain lines',
-            'Electrical outlets',
-            'Light fixtures',
-            'Exhaust fan duct',
-            'Drywall/backer board',
-            'Tile (walls)',
-            'Flooring',
-            'Caulk/grout lines',
-            'Cover plates',
-            'Grab bars (code)',
-            'Clearances (code)',
-            'Door hardware'
-          ]
-        },
-        kitchen: {
-          label: 'Kitchen',
-          color: 'bg-amber-100 border-amber-300',
-          items: [
-            'Cabinets (upper)',
-            'Cabinets (lower)',
-            'Island/peninsula',
-            'Appliances (fridge)',
-            'Appliances (range/cooktop)',
-            'Appliances (oven)',
-            'Appliances (dishwasher)',
-            'Appliances (microwave)',
-            'Countertops',
-            'Backsplash',
-            'Sink',
-            'Faucet',
-            'Water supply lines',
-            'Drain lines',
-            'Electrical outlets',
-            'Light fixtures',
-            'Range hood/exhaust',
-            'Flooring',
-            'Caulk/grout lines',
-            'Cover plates',
-            'Knobs/handles'
-          ]
-        },
-        garage: {
-          label: 'Garage',
-          color: 'bg-slate-100 border-slate-300',
-          items: [
-            'Slab/foundation',
-            'Framing/studs',
-            'Roofing',
-            'Garage door',
-            'Garage door opener',
-            'Side door',
-            'Windows',
-            'Electrical outlets',
-            'Light fixtures',
-            'Circuits/breaker box',
-            'Lighting switches',
-            'Ventilation',
-            'Flooring/epoxy',
-            'Drywall (if any)',
-            'Insulation',
-            'HVAC connections'
-          ]
-        },
         custom_home: {
           label: 'Custom Home',
           color: 'bg-green-100 border-green-300',
@@ -133,24 +61,76 @@
             'Caulk/seal exterior'
           ]
         },
-        remodel: {
-          label: 'Room Remodel',
-          color: 'bg-rose-100 border-rose-300',
+        garage: {
+          label: 'Garage',
+          color: 'bg-slate-100 border-slate-300',
           items: [
-            'Demolition complete',
-            'Structural (if any)',
-            'Electrical (rough-in)',
-            'Plumbing (rough-in)',
-            'HVAC (rough-in)',
+            'Slab/foundation',
+            'Framing/studs',
+            'Roofing',
+            'Garage door',
+            'Garage door opener',
+            'Side door',
+            'Windows',
+            'Electrical outlets',
+            'Light fixtures',
+            'Circuits/breaker box',
+            'Lighting switches',
+            'Ventilation',
+            'Flooring/epoxy',
+            'Drywall (if any)',
             'Insulation',
-            'Drywall',
+            'HVAC connections'
+          ]
+        },
+        kitchen: {
+          label: 'Kitchen',
+          color: 'bg-amber-100 border-amber-300',
+          items: [
+            'Cabinets (upper)',
+            'Cabinets (lower)',
+            'Island/peninsula',
+            'Appliances (fridge)',
+            'Appliances (range/cooktop)',
+            'Appliances (oven)',
+            'Appliances (dishwasher)',
+            'Appliances (microwave)',
+            'Countertops',
+            'Backsplash',
+            'Sink',
+            'Faucet',
+            'Water supply lines',
+            'Drain lines',
+            'Electrical outlets',
+            'Light fixtures',
+            'Range hood/exhaust',
             'Flooring',
-            'Trim/baseboard',
-            'Paint',
-            'Fixtures/hardware',
-            'Outlets/switches',
-            'Lighting',
-            'Caulk/grout'
+            'Caulk/grout lines',
+            'Cover plates',
+            'Knobs/handles'
+          ]
+        },
+        bathroom: {
+          label: 'Bathroom',
+          color: 'bg-blue-100 border-blue-300',
+          items: [
+            'Toilet',
+            'Sink/vanity',
+            'Tub/shower',
+            'Exhaust ventilation',
+            'Water supply lines',
+            'Drain lines',
+            'Electrical outlets',
+            'Light fixtures',
+            'Exhaust fan duct',
+            'Drywall/backer board',
+            'Tile (walls)',
+            'Flooring',
+            'Caulk/grout lines',
+            'Cover plates',
+            'Grab bars (code)',
+            'Clearances (code)',
+            'Door hardware'
           ]
         },
         basement: {
@@ -172,6 +152,26 @@
             'Outlets/switches',
             'Stairway code items',
             'Egress window (if req.)',
+            'Caulk/grout'
+          ]
+        },
+        remodel: {
+          label: 'Room Remodel',
+          color: 'bg-rose-100 border-rose-300',
+          items: [
+            'Demolition complete',
+            'Structural (if any)',
+            'Electrical (rough-in)',
+            'Plumbing (rough-in)',
+            'HVAC (rough-in)',
+            'Insulation',
+            'Drywall',
+            'Flooring',
+            'Trim/baseboard',
+            'Paint',
+            'Fixtures/hardware',
+            'Outlets/switches',
+            'Lighting',
             'Caulk/grout'
           ]
         }
