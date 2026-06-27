@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bidster - Construction Checklist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const Bidster = () => {
+      const projectTypes = {
+        bathroom: {
+          label: 'Bathroom',
+          color: 'bg-blue-100 border-blue-300',
+          items: [
+            'Toilet',
+            'Sink/vanity',
+            'Tub/shower',
+            'Exhaust ventilation',
+            'Water supply lines',
+            'Drain lines',
+            'Electrical outlets',
+            'Light fixtures',
+            'Exhaust fan duct',
+            'Drywall/backer board',
+            'Tile (walls)',
+            'Flooring',
+            'Caulk/grout lines',
+            'Cover plates',
+            'Grab bars (code)',
+            'Clearances (code)',
+            'Door hardware'
+          ]
+        },
+        kitchen: {
+          label: 'Kitchen',
+          color: 'bg-amber-100 border-amber-300',
+          items: [
+            'Cabinets (upper)',
+            'Cabinets (lower)',
+            'Island/peninsula',
+            'Appliances (fridge)',
+            'Appliances (range/cooktop)',
+            'Appliances (oven)',
+            'Appliances (dishwasher)',
+            'Appliances (microwave)',
+            'Countertops',
+            'Backsplash',
+            'Sink',
+            'Faucet',
+            'Water supply lines',
+            'Drain lines',
+            'Electrical outlets',
+            'Light fixtures',
+            'Range hood/exhaust',
+            'Flooring',
+            'Caulk/grout lines',
+            'Cover plates',
+            'Knobs/handles'
+          ]
+        },
+        garage: {
+          label: 'Garage',
+          color: 'bg-slate-100 border-slate-300',
+          items: [
+            'Slab/foundation',
+            'Framing/studs',
+            'Roofing',
+            'Garage door',
+            'Garage door opener',
+            'Side door',
+            'Windows',
+            'Electrical outlets',
+            'Light fixtures',
+            'Circuits/breaker box',
+            'Lighting switches',
+            'Ventilation',
+            'Flooring/epoxy',
+            'Drywall (if any)',
+            'Insulation',
+            'HVAC connections'
+          ]
+        },
+        custom_home: {
+          label: 'Custom Home',
+          color: 'bg-green-100 border-green-300',
+          items: [
+            'Foundation/slab',
+            'Framing complete',
+            'Roof',
+            'Exterior siding',
+            'Windows/doors',
+            'HVAC (rough-in)',
+            'Electrical (rough-in)',
+            'Plumbing (rough-in)',
+            'Insulation',
+            'Drywall',
+            'Interior doors',
+            'Hardware',
+            'Flooring',
+            'Lighting fixtures',
+            'Outlets/switches',
+            'Paint'
+          ]
+        },
+        addition: {
+          label: 'Addition',
+          color: 'bg-purple-100 border-purple-300',
+          items: [
+            'Foundation tie-in',
+            'Framing tie-in',
+            'Roof tie-in',
+            'Exterior matches existing',
+            'Siding/trim match',
+            'Windows match',
+            'Electrical (rough-in)',
+            'Plumbing (rough-in)',
+            'HVAC connections',
+            'Insulation',
+            'Drywall',
+            'Interior doors',
+            'Flooring match',
+            'Paint match',
+            'Lighting',
+            'Caulk/seal exterior'
+          ]
+        },
+        remodel: {
+          label: 'Room Remodel',
+          color: 'bg-rose-100 border-rose-300',
+          items: [
+            'Demolition complete',
+            'Structural (if any)',
+            'Electrical (rough-in)',
+            'Plumbing (rough-in)',
+            'HVAC (rough-in)',
+            'Insulation',
+            'Drywall',
+            'Flooring',
+            'Trim/baseboard',
+            'Paint',
+            'Fixtures/hardware',
+            'Outlets/switches',
+            'Lighting',
+            'Caulk/grout'
+          ]
+        },
+        basement: {
+          label: 'Finished Basement',
+          color: 'bg-indigo-100 border-indigo-300',
+          items: [
+            'Foundation crack sealing',
+            'Waterproofing',
+            'Framing',
+            'Electrical (rough-in)',
+            'Plumbing (if any)',
+            'HVAC (rough-in)',
+            'Insulation',
+            'Drywall',
+            'Flooring',
+            'Trim/baseboard',
+            'Paint',
+            'Lighting fixtures',
+            'Outlets/switches',
+            'Stairway code items',
+            'Egress window (if req.)',
+            'Caulk/grout'
+          ]
+        }
+      };
+
+      const [selectedProjects, setSelectedProjects] = useState([]);
+      const [checklist, setChecklist] = useState({});
+      const [notes, setNotes] = useState({});
+
+      useEffect(() => {
+        const saved = localStorage.getItem('bidster-data');
+        if (saved) {
+          const data = JSON.parse(saved);
+          setSelectedProjects(data.selectedProjects || []);
+          setChecklist(data.checklist || {});
+          setNotes(data.notes || {});
+        }
+      }, []);
+
+      useEffect(() => {
+        localStorage.setItem('bidster-data', JSON.stringify({
+          selectedProjects,
+          checklist,
+          notes
+        }));
+      }, [selectedProjects, checklist, notes]);
+
+      const toggleProject = (project) => {
+        setSelectedProjects(prev =>
+          prev.includes(project)
+            ? prev.filter(p => p !== project)
+            : [...prev, project]
+        );
+      };
+
+      const toggleItem = (item) => {
+        setChecklist(prev => ({
+          ...prev,
+          [item]: !prev[item]
+        }));
+      };
+
+      const updateNote = (item, note) => {
+        setNotes(prev => ({
+          ...prev,
+          [item]: note
+        }));
+      };
+
+      const getCombinedItems = () => {
+        const items = new Set();
+        selectedProjects.forEach(project => {
+          projectTypes[project].items.forEach(item => {
+            items.add(item);
+          });
+        });
+        return Array.from(items).sort();
+      };
+
+      const getCheckedCount = () => {
+        const combined = getCombinedItems();
+        return combined.filter(item => checklist[item]).length;
+      };
+
+      const exportData = () => {
+        const timestamp = new Date().toLocaleString();
+        const projects = selectedProjects.map(p => projectTypes[p].label).join(', ');
+        const combined = getCombinedItems();
+        
+        let text = `BIDSTER CHECKLIST\n`;
+        text += `==================\n`;
+        text += `Date: ${timestamp}\n`;
+        text += `Projects: ${projects}\n`;
+        text += `Status: ${getCheckedCount()}/${combined.length} checked\n\n`;
+        
+        combined.forEach(item => {
+          const checked = checklist[item] ? '✓' : ' ';
+          const note = notes[item] ? ` - ${notes[item]}` : '';
+          text += `[${checked}] ${item}${note}\n`;
+        });
+        
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Checklist copied to clipboard!');
+        });
+      };
+
+      const clearAll = () => {
+        if (window.confirm('Clear all data and start fresh?')) {
+          setSelectedProjects([]);
+          setChecklist({});
+          setNotes({});
+        }
+      };
+
+      const combined = getCombinedItems();
+      const checked = getCheckedCount();
+      const progress = combined.length > 0 ? Math.round((checked / combined.length) * 100) : 0;
+
+      // SVG Check icon
+      const CheckIcon = () => (
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
+      );
+
+      // SVG Trash icon
+      const TrashIcon = () => (
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+        </svg>
+      );
+
+      // SVG Download icon
+      const DownloadIcon = () => (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+      );
+
+      return (
+        <div className="min-h-screen bg-slate-50 p-4 pb-20">
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center">
+                <CheckIcon />
+              </div>
+              <h1 className="text-3xl font-bold text-slate-900">Bidster</h1>
+            </div>
+            <p className="text-slate-600 text-sm">Don't miss a thing. Field checklist for estimators.</p>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-lg border border-slate-200 p-6 mb-6">
+              <h2 className="text-sm font-semibold text-slate-900 mb-4">Select Projects</h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 mb-4">
+                {Object.entries(projectTypes).map(([key, config]) => (
+                  <button
+                    key={key}
+                    onClick={() => toggleProject(key)}
+                    className={`p-3 rounded-lg border-2 transition-all text-left ${
+                      selectedProjects.includes(key)
+                        ? `${config.color} border-current`
+                        : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <span className="text-sm font-medium text-slate-900">{config.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {selectedProjects.length === 0 ? (
+              <div className="bg-white rounded-lg border border-slate-200 p-12 text-center">
+                <p className="text-slate-500">Select a project type to begin</p>
+              </div>
+            ) : (
+              <>
+                <div className="bg-white rounded-lg border border-slate-200 p-6 mb-6">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-sm font-semibold text-slate-900">Progress</span>
+                    <span className="text-sm font-bold text-amber-600">{checked}/{combined.length}</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-2">
+                    <div
+                      className="bg-amber-600 h-2 rounded-full transition-all"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {combined.map((item) => (
+                    <div
+                      key={item}
+                      className="bg-white rounded-lg border border-slate-200 p-4 hover:border-slate-300 transition-colors"
+                    >
+                      <div className="flex gap-3 mb-2">
+                        <button
+                          onClick={() => toggleItem(item)}
+                          className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all text-white ${
+                            checklist[item]
+                              ? 'bg-amber-600 border-amber-600'
+                              : 'border-slate-300 hover:border-slate-400'
+                          }`}
+                        >
+                          {checklist[item] && <CheckIcon />}
+                        </button>
+                        <span
+                          className={`font-medium text-sm transition-all ${
+                            checklist[item]
+                              ? 'text-slate-400 line-through'
+                              : 'text-slate-900'
+                          }`}
+                        >
+                          {item}
+                        </span>
+                      </div>
+                      <textarea
+                        value={notes[item] || ''}
+                        onChange={(e) => updateNote(item, e.target.value)}
+                        placeholder="Add notes (measurements, details, issues...)"
+                        className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent resize-none"
+                        rows="2"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex gap-3 mt-8 fixed bottom-6 left-4 right-4 max-w-2xl mx-auto">
+                  <button
+                    onClick={exportData}
+                    className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <DownloadIcon />
+                    Copy Checklist
+                  </button>
+                  <button
+                    onClick={clearAll}
+                    className="flex-shrink-0 bg-slate-200 hover:bg-slate-300 text-slate-900 p-3 rounded-lg transition-colors"
+                  >
+                    <TrashIcon />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Bidster />);
+  </script>
+</body>
+</html>
