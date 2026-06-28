@@ -21,22 +21,30 @@
           label: 'Custom Home',
           color: 'bg-green-100 border-green-300',
           items: [
-            'Foundation/slab',
-            'Framing complete',
-            'Roof',
-            'Exterior siding',
-            'Windows/doors',
-            'HVAC (rough-in)',
-            'Electrical (rough-in)',
-            'Plumbing (rough-in)',
+            'Demo',
+            'Excavation',
+            'Footers',
+            'Block/Pour Pad',
+            'Framing/Windows/Ext Doors',
+            'Backfill/Grading',
+            'Plumbing rough-in',
+            'Roofing',
+            'Electrical rough-in',
+            'HVAC rough',
+            'Fire caulking',
             'Insulation',
-            'Drywall',
-            'Interior doors',
-            'Hardware',
+            'Siding/Fascia/Soffit',
+            'Gutters/Downspouts',
+            'Hang drywall',
+            'Drywall finish',
+            'Paint',
+            'Kitchen cabinets/counters',
             'Flooring',
-            'Lighting fixtures',
-            'Outlets/switches',
-            'Paint'
+            'Electrical final',
+            'HVAC final',
+            'Plumbing final',
+            'Trim/interior doors',
+            'Paint touchup'
           ]
         },
         addition: {
@@ -87,92 +95,99 @@
           label: 'Kitchen',
           color: 'bg-amber-100 border-amber-300',
           items: [
-            'Cabinets (upper)',
-            'Cabinets (lower)',
-            'Island/peninsula',
-            'Appliances (fridge)',
-            'Appliances (range/cooktop)',
-            'Appliances (oven)',
-            'Appliances (dishwasher)',
-            'Appliances (microwave)',
-            'Countertops',
-            'Backsplash',
-            'Sink',
-            'Faucet',
-            'Water supply lines',
-            'Drain lines',
-            'Electrical outlets',
-            'Light fixtures',
-            'Range hood/exhaust',
+            'Demo',
+            'Plumbing rough-in',
+            'Electrical rough-in',
+            'HVAC rough',
+            'Framing',
+            'Hang drywall',
+            'Drywall finish',
+            'Paint',
+            'Vanity install',
             'Flooring',
-            'Caulk/grout lines',
-            'Cover plates',
-            'Knobs/handles'
+            'Electrical final',
+            'HVAC final',
+            'Plumbing final',
+            'Trim/interior doors',
+            'Paint touchup'
           ]
         },
         bathroom: {
           label: 'Bathroom',
           color: 'bg-blue-100 border-blue-300',
           items: [
-            'Toilet',
-            'Sink/vanity',
-            'Tub/shower',
-            'Exhaust ventilation',
-            'Water supply lines',
-            'Drain lines',
-            'Electrical outlets',
-            'Light fixtures',
-            'Exhaust fan duct',
+            'Demo',
+            'Framing',
+            'Plumbing rough-in',
+            'Electrical rough-in',
+            'Exhaust fan (duct, damper)',
+            'Insulation',
             'Drywall/backer board',
-            'Tile (walls)',
-            'Flooring',
+            'Paint',
+            'Lighting (recessed, vanity)',
+            'Shower/tub rough-in',
+            'Surround (tile/vinyl/schluter)',
             'Caulk/grout lines',
-            'Cover plates',
-            'Grab bars (code)',
-            'Clearances (code)',
-            'Door hardware'
+            'Toilet',
+            'Flooring',
+            'Vanity',
+            'Countertop',
+            'Sink',
+            'Faucet',
+            'Plumbing final connections',
+            'Electrical final (covers, trim)',
+            'Accessories (towel bar, TP, grab bar)',
+            'Mirror/medicine cabinet',
+            'Trim/door hardware',
+            'Door'
           ]
         },
         basement: {
           label: 'Finished Basement',
           color: 'bg-indigo-100 border-indigo-300',
           items: [
-            'Foundation crack sealing',
-            'Waterproofing',
+            'Demo',
             'Framing',
-            'Electrical (rough-in)',
-            'Plumbing (if any)',
-            'HVAC (rough-in)',
+            'Plumbing rough-in',
+            'Electrical rough-in',
+            'HVAC rough',
+            'Fire caulking',
             'Insulation',
-            'Drywall',
-            'Flooring',
-            'Trim/baseboard',
+            'Hang drywall',
+            'Drywall finish',
             'Paint',
-            'Lighting fixtures',
-            'Outlets/switches',
-            'Stairway code items',
-            'Egress window (if req.)',
-            'Caulk/grout'
+            'Acoustical ceiling grid',
+            'Flooring',
+            'Cabinets/interior doors/trim',
+            'HVAC final',
+            'Plumbing final',
+            'Electrical final',
+            'Door knobs/stops',
+            'Paint touchup'
           ]
         },
         remodel: {
           label: 'Room Remodel',
           color: 'bg-rose-100 border-rose-300',
           items: [
-            'Demolition complete',
-            'Structural (if any)',
-            'Electrical (rough-in)',
-            'Plumbing (rough-in)',
-            'HVAC (rough-in)',
+            'Demo',
+            'Framing',
+            'Plumbing rough-in',
+            'Electrical rough-in',
+            'HVAC rough',
+            'Fire caulking',
             'Insulation',
-            'Drywall',
-            'Flooring',
-            'Trim/baseboard',
+            'Hang drywall',
+            'Drywall finish',
             'Paint',
-            'Fixtures/hardware',
-            'Outlets/switches',
-            'Lighting',
-            'Caulk/grout'
+            'Acoustical ceiling grid',
+            'Flooring',
+            'Cabinets/interior doors/trim',
+            'HVAC final',
+            'Plumbing final',
+            'Electrical final',
+            'Door knobs/stops',
+            'Paint touchup'
           ]
         }
       };
@@ -180,6 +195,8 @@
       const [selectedProjects, setSelectedProjects] = useState([]);
       const [checklist, setChecklist] = useState({});
       const [notes, setNotes] = useState({});
+      const [jobName, setJobName] = useState('');
+      const [roomDimensions, setRoomDimensions] = useState('');
 
       useEffect(() => {
         const saved = localStorage.getItem('bidster-data');
@@ -188,6 +205,8 @@
           setSelectedProjects(data.selectedProjects || []);
           setChecklist(data.checklist || {});
           setNotes(data.notes || {});
+          setJobName(data.jobName || '');
+          setRoomDimensions(data.roomDimensions || '');
         }
       }, []);
 
@@ -195,9 +214,11 @@
         localStorage.setItem('bidster-data', JSON.stringify({
           selectedProjects,
           checklist,
-          notes
+          notes,
+          jobName,
+          roomDimensions
         }));
-      }, [selectedProjects, checklist, notes]);
+      }, [selectedProjects, checklist, notes, jobName, roomDimensions]);
 
       const toggleProject = (project) => {
         setSelectedProjects(prev =>
@@ -228,7 +249,7 @@
             items.add(item);
           });
         });
-        return Array.from(items).sort();
+        return Array.from(items);
       };
 
       const getCheckedCount = () => {
@@ -243,6 +264,8 @@
         
         let text = `BIDSTER CHECKLIST\n`;
         text += `==================\n`;
+        if (jobName) text += `Job: ${jobName}\n`;
+        if (roomDimensions) text += `Room Dimensions: ${roomDimensions}\n`;
         text += `Date: ${timestamp}\n`;
         text += `Projects: ${projects}\n`;
         text += `Status: ${getCheckedCount()}/${combined.length} checked\n\n`;
@@ -250,7 +273,8 @@
         combined.forEach(item => {
           const checked = checklist[item] ? '✓' : ' ';
           const note = notes[item] ? ` - ${notes[item]}` : '';
-          text += `[${checked}] ${item}${note}\n`;
+          const dimensions = notes[`${item}-dimensions`] ? ` [${notes[`${item}-dimensions`]}]` : '';
+          text += `[${checked}] ${item}${dimensions}${note}\n`;
         });
         
         navigator.clipboard.writeText(text).then(() => {
@@ -258,11 +282,58 @@
         });
       };
 
+      const printData = () => {
+        const timestamp = new Date().toLocaleString();
+        const projects = selectedProjects.map(p => projectTypes[p].label).join(', ');
+        const combined = getCombinedItems();
+        
+        let html = `<html><head><title>Bidster Checklist</title><style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          h1 { margin-bottom: 10px; }
+          .header { margin-bottom: 20px; }
+          .item { margin-bottom: 12px; page-break-inside: avoid; }
+          .checkbox { display: inline-block; width: 16px; height: 16px; border: 1px solid #333; margin-right: 8px; }
+          .checked { background: #333; }
+          .item-name { font-weight: bold; }
+          .notes { margin-left: 24px; font-size: 0.9em; color: #666; }
+          @media print { body { padding: 10px; } }
+        </style></head><body>`;
+        
+        html += `<div class="header">
+          <h1>BIDSTER CHECKLIST</h1>`;
+        if (jobName) html += `<p><strong>Job:</strong> ${jobName}</p>`;
+        if (roomDimensions) html += `<p><strong>Room Dimensions:</strong> ${roomDimensions}</p>`;
+        html += `<p><strong>Date:</strong> ${timestamp}</p>
+          <p><strong>Projects:</strong> ${projects}</p>
+          <p><strong>Status:</strong> ${getCheckedCount()}/${combined.length} checked</p>
+        </div>`;
+        
+        combined.forEach(item => {
+          const isChecked = checklist[item] ? 'checked' : '';
+          const note = notes[item] ? `<div class="notes">${notes[item]}</div>` : '';
+          const dimensions = notes[`${item}-dimensions`] ? `<div class="notes"><strong>Dimensions:</strong> ${notes[`${item}-dimensions`]}</div>` : '';
+          html += `<div class="item">
+            <span class="checkbox ${isChecked}"></span>
+            <span class="item-name">${item}</span>
+            ${dimensions}${note}
+          </div>`;
+        });
+        
+        html += `</body></html>`;
+        
+        const printWindow = window.open('', '', 'width=800,height=600');
+        printWindow.document.write(html);
+        printWindow.document.close();
+        setTimeout(() => printWindow.print(), 250);
+      };
+
       const clearAll = () => {
         if (window.confirm('Clear all data and start fresh?')) {
           setSelectedProjects([]);
           setChecklist({});
           setNotes({});
+          setJobName('');
+          setRoomDimensions('');
         }
       };
 
@@ -330,14 +401,21 @@
             ) : (
               <>
                 <div className="bg-white rounded-lg border border-slate-200 p-6 mb-6">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-semibold text-slate-900">Progress</span>
-                    <span className="text-sm font-bold text-amber-600">{checked}/{combined.length}</span>
-                  </div>
-                  <div className="w-full bg-slate-200 rounded-full h-2">
-                    <div
-                      className="bg-amber-600 h-2 rounded-full transition-all"
-                      style={{ width: `${progress}%` }}
+                  <h2 className="text-sm font-semibold text-slate-900 mb-4">Job Info</h2>
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={jobName}
+                      onChange={(e) => setJobName(e.target.value)}
+                      placeholder="Job/address name"
+                      className="w-full p-2 text-sm border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      value={roomDimensions}
+                      onChange={(e) => setRoomDimensions(e.target.value)}
+                      placeholder="Room dimensions (e.g., 8x10, 10x12)"
+                      className="w-full p-2 text-sm border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -348,34 +426,53 @@
                       key={item}
                       className="bg-white rounded-lg border border-slate-200 p-4 hover:border-slate-300 transition-colors"
                     >
-                      <div className="flex gap-3 mb-2">
+                      <div className="flex gap-3 items-center mb-2">
                         <button
                           onClick={() => toggleItem(item)}
                           className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all text-white ${
                             checklist[item]
-                              ? 'bg-amber-600 border-amber-600'
+                              ? 'bg-green-600 border-green-600'
                               : 'border-slate-300 hover:border-slate-400'
                           }`}
                         >
                           {checklist[item] && <CheckIcon />}
                         </button>
-                        <span
-                          className={`font-medium text-sm transition-all ${
+                        <span className={`text-sm transition-all ${
                             checklist[item]
-                              ? 'text-slate-400 line-through'
-                              : 'text-slate-900'
-                          }`}
-                        >
+                              ? 'font-bold text-slate-900'
+                              : 'font-normal text-slate-400'
+                          }`}>
                           {item}
                         </span>
                       </div>
-                      <textarea
-                        value={notes[item] || ''}
-                        onChange={(e) => updateNote(item, e.target.value)}
-                        placeholder="Add notes (measurements, details, issues...)"
-                        className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent resize-none"
-                        rows="2"
-                      />
+                      {checklist[item] && (
+                        <textarea
+                          value={notes[item] || ''}
+                          onChange={(e) => updateNote(item, e.target.value)}
+                          placeholder={
+                            item.includes('rough-in') || item.includes('Plumbing')
+                              ? 'Joist direction? Water routing? Supply sizes?'
+                              : item.includes('Shower/tub')
+                              ? 'Tub/shower combo, shower-only, or tub-only? Drain location?'
+                              : item.includes('Surround')
+                              ? 'Tile (which?), vinyl, or Schlüter? Grout color?'
+                              : item.includes('Framing')
+                              ? 'Blocking locations? Joist direction documented?'
+                              : 'Add notes (measurements, details, issues...)'
+                          }
+                          className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent resize-none"
+                          rows="2"
+                        />
+                      )}
+                      {checklist[item] && (item.includes('Shower/tub') || item.includes('Flooring') || item.includes('Vanity')) && (
+                        <input
+                          type="text"
+                          value={notes[`${item}-dimensions`] || ''}
+                          onChange={(e) => updateNote(`${item}-dimensions`, e.target.value)}
+                          placeholder={item.includes('Shower/tub') ? 'Shower dimensions (e.g., 3x5)' : item.includes('Flooring') ? 'Flooring type/details' : 'Vanity dimensions (e.g., 36" wide)'}
+                          className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent mt-2"
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -387,6 +484,15 @@
                   >
                     <DownloadIcon />
                     Copy Checklist
+                  </button>
+                  <button
+                    onClick={printData}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H9a2 2 0 00-2 2v2a2 2 0 002 2h10a2 2 0 002-2v-2a2 2 0 00-2-2h-2m-4-4V7a2 2 0 012-2h.5a2 2 0 011.732 1.002L10 7m0 0L8.27 4.002A2 2 0 016.5 3H6a2 2 0 00-2 2v4" />
+                    </svg>
+                    Print
                   </button>
                   <button
                     onClick={clearAll}
