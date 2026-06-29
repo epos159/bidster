@@ -24,49 +24,51 @@
             'Demo',
             'Excavation',
             'Footers',
-            'Block/Pour Pad',
-            'Framing/Windows/Ext Doors',
+            'Block/Pour',
+            'Framing',
+            'Windows',
+            'Doors (exterior)',
             'Backfill/Grading',
             'Plumbing rough-in',
             'Roofing',
             'Electrical rough-in',
-            'HVAC rough',
+            'HVAC rough-in',
             'Fire caulking',
             'Insulation',
             'Siding/Fascia/Soffit',
             'Gutters/Downspouts',
-            'Hang drywall',
-            'Drywall finish',
+            'Drywall',
             'Paint',
             'Kitchen cabinets/counters',
             'Flooring',
             'Electrical final',
             'HVAC final',
             'Plumbing final',
-            'Trim/interior doors',
-            'Paint touchup'
+            'Trim',
+            'Interior doors'
           ]
         },
         addition: {
           label: 'Addition',
           color: 'bg-purple-100 border-purple-300',
           items: [
-            'Foundation tie-in',
-            'Framing tie-in',
+            'Foundation',
+            'Framing',
             'Roof tie-in',
-            'Exterior matches existing',
-            'Siding/trim match',
-            'Windows match',
-            'Electrical (rough-in)',
-            'Plumbing (rough-in)',
-            'HVAC connections',
+            'Windows',
+            'Plumbing rough-in',
+            'Electrical rough-in',
+            'HVAC rough-in',
             'Insulation',
+            'Siding/Fascia/Soffit',
             'Drywall',
-            'Interior doors',
-            'Flooring match',
-            'Paint match',
-            'Lighting',
-            'Caulk/seal exterior'
+            'Paint',
+            'Flooring',
+            'Electrical final',
+            'HVAC final',
+            'Plumbing final',
+            'Trim',
+            'Interior doors'
           ]
         },
         garage: {
@@ -98,18 +100,16 @@
             'Demo',
             'Plumbing rough-in',
             'Electrical rough-in',
-            'HVAC rough',
+            'HVAC rough-in',
             'Framing',
-            'Hang drywall',
-            'Drywall finish',
+            'Drywall',
             'Paint',
             'Vanity install',
             'Flooring',
             'Electrical final',
             'HVAC final',
             'Plumbing final',
-            'Trim/interior doors',
-            'Paint touchup'
+            'Trim'
           ]
         },
         bathroom: {
@@ -150,20 +150,20 @@
             'Framing',
             'Plumbing rough-in',
             'Electrical rough-in',
-            'HVAC rough',
+            'HVAC rough-in',
             'Fire caulking',
             'Insulation',
-            'Hang drywall',
-            'Drywall finish',
+            'Drywall',
             'Paint',
             'Acoustical ceiling grid',
             'Flooring',
-            'Cabinets/interior doors/trim',
+            'Cabinets',
+            'Interior doors',
+            'Trim',
             'HVAC final',
             'Plumbing final',
             'Electrical final',
-            'Door knobs/stops',
-            'Paint touchup'
+            'Door knobs/stops'
           ]
         },
         remodel: {
@@ -174,20 +174,20 @@
             'Framing',
             'Plumbing rough-in',
             'Electrical rough-in',
-            'HVAC rough',
+            'HVAC rough-in',
             'Fire caulking',
             'Insulation',
-            'Hang drywall',
-            'Drywall finish',
+            'Drywall',
             'Paint',
             'Acoustical ceiling grid',
             'Flooring',
-            'Cabinets/interior doors/trim',
+            'Cabinets',
+            'Interior doors',
+            'Trim',
             'HVAC final',
             'Plumbing final',
             'Electrical final',
-            'Door knobs/stops',
-            'Paint touchup'
+            'Door knobs/stops'
           ]
         }
       };
@@ -277,9 +277,18 @@
           text += `[${checked}] ${item}${dimensions}${note}\n`;
         });
         
-        navigator.clipboard.writeText(text).then(() => {
-          alert('Checklist copied to clipboard!');
-        });
+        // Use Web Share API if available
+        if (navigator.share) {
+          navigator.share({
+            title: 'Bidster Checklist',
+            text: text
+          }).catch(err => console.log('Share cancelled'));
+        } else {
+          // Fallback to clipboard
+          navigator.clipboard.writeText(text).then(() => {
+            alert('Checklist copied to clipboard!');
+          });
+        }
       };
 
       const printData = () => {
@@ -452,6 +461,12 @@
                           placeholder={
                             item.includes('rough-in') || item.includes('Plumbing')
                               ? 'Joist direction? Water routing? Supply sizes?'
+                              : item.includes('Windows')
+                              ? 'Qty? Size? Style? Double/triple pane?'
+                              : item.includes('Doors') && !item.includes('Interior')
+                              ? 'Qty? Style? Hardware?'
+                              : item.includes('Interior doors')
+                              ? 'Qty? Style? Hardware?'
                               : item.includes('Shower/tub')
                               ? 'Tub/shower combo, shower-only, or tub-only? Drain location?'
                               : item.includes('Surround')
@@ -482,8 +497,10 @@
                     onClick={exportData}
                     className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
-                    <DownloadIcon />
-                    Copy Checklist
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C9.589 12.438 10 11.306 10 10c0-1.657-.895-3.095-2.236-3.868m0 0a9 9 0 1 0 12.732 0m-9.02 12.55c.125.125.26.25.391.368M7 10a3 3 0 1 1 6 0 3 3 0 0 1-6 0z" />
+                    </svg>
+                    Share
                   </button>
                   <button
                     onClick={printData}
