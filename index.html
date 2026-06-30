@@ -15,6 +15,72 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
+    // Reusable sub-item sets
+    const ELECTRICAL_ROUGH_SUB = [
+      { label: 'Switches', type: 'qty' },
+      { label: 'Outlets', type: 'qty' },
+      { label: '220 outlets', type: 'qty' },
+      { label: 'Range hood', type: 'checkbox' },
+      { label: 'Appliance circuits', type: 'checkbox' },
+      { label: 'Panel/subpanel considerations', type: 'notes' }
+    ];
+
+    const ELECTRICAL_FINAL_SUB = [
+      { label: 'Light fixtures', type: 'qty' },
+      { label: 'Recessed lights', type: 'qty' },
+      { label: 'Vanity lights', type: 'qty' },
+      { label: 'Ceiling fan', type: 'qty' },
+      { label: 'Cover plates', type: 'qty' },
+      { label: 'Exhaust fan', type: 'qty' }
+    ];
+
+    const PLUMBING_ROUGH_SUB = [
+      { label: 'Existing line size (upgrade needed?)', type: 'notes' },
+      { label: 'Drain venting', type: 'checkbox' },
+      { label: 'Exhaust fan exhaust (roof boot needed?)', type: 'checkbox' },
+      { label: 'Supply lines', type: 'qty' },
+      { label: 'Drain lines', type: 'checkbox' }
+    ];
+
+    const PLUMBING_FINAL_SUB = [
+      { label: 'Shower (drain location)', type: 'notes' },
+      { label: 'Tub (drain location)', type: 'notes' },
+      { label: 'Shower/Tub combo (drain location)', type: 'notes' },
+      { label: 'Sinks', type: 'qty' },
+      { label: 'Faucets', type: 'qty' },
+      { label: 'Toilet', type: 'qty' },
+      { label: 'Exhaust fan exhaust', type: 'checkbox' },
+      { label: 'Dishwasher hookup', type: 'checkbox' },
+      { label: 'Dryer hookup', type: 'checkbox' }
+    ];
+
+    const ROOFING_SUB = [
+      { label: 'Tie-in considerations', type: 'notes' },
+      { label: 'Soffit framing', type: 'checkbox' },
+      { label: 'Ice/water shield (slope check)', type: 'checkbox' },
+      { label: 'Roof boots (vent penetrations)', type: 'qty' }
+    ];
+
+    const FOUNDATION_SUB = [
+      { label: 'Pad (size)', type: 'notes' },
+      { label: 'Sidewalk (size, separate trip)', type: 'notes' }
+    ];
+
+    const FRAMING_SUB = [
+      { label: 'Blocking (accessories/grab bars)', type: 'checkbox' }
+    ];
+
+    const DOORS_SUB = [
+      { label: 'Door stops', type: 'qty' },
+      { label: 'Hardware', type: 'notes' }
+    ];
+
+    const HVAC_ROUGH_SUB = [
+      { label: 'Range hood vent', type: 'checkbox' },
+      { label: 'Fireplace vent', type: 'checkbox' },
+      { label: 'Bath exhaust vent', type: 'checkbox' }
+    ];
+
     const Bidster = () => {
       const projectTypes = {
         custom_home: {
@@ -24,15 +90,15 @@
             'Demo',
             'Excavation',
             'Footers',
-            'Block/Pour',
-            'Framing',
+            { name: 'Block/Pour', subItems: FOUNDATION_SUB },
+            { name: 'Framing', subItems: FRAMING_SUB },
             'Windows',
-            'Doors (exterior)',
+            { name: 'Doors (exterior)', subItems: DOORS_SUB },
             'Backfill/Grading',
-            'Plumbing rough-in',
-            'Roofing',
-            'Electrical rough-in',
-            'HVAC rough-in',
+            { name: 'Plumbing rough-in', subItems: PLUMBING_ROUGH_SUB },
+            { name: 'Roofing', subItems: ROOFING_SUB },
+            { name: 'Electrical rough-in', subItems: ELECTRICAL_ROUGH_SUB },
+            { name: 'HVAC rough-in', subItems: HVAC_ROUGH_SUB },
             'Fire caulking',
             'Insulation',
             'Siding/Fascia/Soffit',
@@ -41,14 +107,13 @@
             'Paint',
             'Kitchen cabinets/counters',
             'Flooring',
-            'Electrical final',
+            'Garage door',
+            'Garage door opener',
+            { name: 'Electrical final', subItems: ELECTRICAL_FINAL_SUB },
             'HVAC final',
-            'Plumbing final',
+            { name: 'Plumbing final', subItems: PLUMBING_FINAL_SUB },
             'Trim',
-            'Interior doors'
-          ]
-        },
-        addition: {
+            { name: 'Interior doors', subItems: DOORS_SUB } {
           label: 'Addition',
           color: 'bg-purple-100 border-purple-300',
           items: [
@@ -73,24 +138,25 @@
         },
         garage: {
           label: 'Garage',
-          color: 'bg-slate-100 border-slate-300',
+          color: 'bg-orange-100 border-orange-300',
           items: [
-            'Slab/foundation',
-            'Framing/studs',
+            'Foundation',
+            'Framing',
             'Roofing',
+            'Siding/Fascia/Soffit',
+            'Electrical rough-in',
+            'Plumbing rough-in',
+            'HVAC rough-in',
+            'Insulation',
+            'Drywall',
+            'Paint',
+            'Trim',
+            'Electrical final',
+            'Plumbing final',
+            'HVAC final',
             'Garage door',
             'Garage door opener',
-            'Side door',
-            'Windows',
-            'Electrical outlets',
-            'Light fixtures',
-            'Circuits/breaker box',
-            'Lighting switches',
-            'Ventilation',
-            'Flooring/epoxy',
-            'Drywall (if any)',
-            'Insulation',
-            'HVAC connections'
+            'Man door'
           ]
         },
         kitchen: {
@@ -192,11 +258,15 @@
         }
       };
 
+      const getItemName = (item) => typeof item === 'string' ? item : item.name;
+      const getItemSubItems = (item) => typeof item === 'string' ? null : (item.subItems || null);
+
       const [selectedProjects, setSelectedProjects] = useState([]);
       const [checklist, setChecklist] = useState({});
       const [notes, setNotes] = useState({});
       const [jobName, setJobName] = useState('');
       const [roomDimensions, setRoomDimensions] = useState('');
+      const [subItemData, setSubItemData] = useState({});
 
       useEffect(() => {
         const saved = localStorage.getItem('bidster-data');
@@ -207,6 +277,7 @@
           setNotes(data.notes || {});
           setJobName(data.jobName || '');
           setRoomDimensions(data.roomDimensions || '');
+          setSubItemData(data.subItemData || {});
         }
       }, []);
 
@@ -216,9 +287,10 @@
           checklist,
           notes,
           jobName,
-          roomDimensions
+          roomDimensions,
+          subItemData
         }));
-      }, [selectedProjects, checklist, notes, jobName, roomDimensions]);
+      }, [selectedProjects, checklist, notes, jobName, roomDimensions, subItemData]);
 
       const toggleProject = (project) => {
         setSelectedProjects(prev =>
@@ -228,63 +300,102 @@
         );
       };
 
-      const toggleItem = (item) => {
+      const toggleItem = (name) => {
         setChecklist(prev => ({
           ...prev,
-          [item]: !prev[item]
+          [name]: !prev[name]
         }));
       };
 
-      const updateNote = (item, note) => {
+      const updateNote = (name, note) => {
         setNotes(prev => ({
           ...prev,
-          [item]: note
+          [name]: note
+        }));
+      };
+
+      const toggleSubItem = (subKey) => {
+        setSubItemData(prev => ({
+          ...prev,
+          [subKey]: { ...prev[subKey], checked: !prev[subKey]?.checked }
+        }));
+      };
+
+      const updateSubItemQty = (subKey, qty) => {
+        setSubItemData(prev => ({
+          ...prev,
+          [subKey]: { ...prev[subKey], qty }
+        }));
+      };
+
+      const updateSubItemValue = (subKey, value) => {
+        setSubItemData(prev => ({
+          ...prev,
+          [subKey]: { ...prev[subKey], value }
         }));
       };
 
       const getCombinedItems = () => {
-        const items = new Set();
+        const map = new Map();
         selectedProjects.forEach(project => {
           projectTypes[project].items.forEach(item => {
-            items.add(item);
+            const name = getItemName(item);
+            const existing = map.get(name);
+            if (!existing || (!getItemSubItems(existing) && getItemSubItems(item))) {
+              map.set(name, item);
+            }
           });
         });
-        return Array.from(items);
+        return Array.from(map.values());
       };
 
       const getCheckedCount = () => {
         const combined = getCombinedItems();
-        return combined.filter(item => checklist[item]).length;
+        return combined.filter(item => checklist[getItemName(item)]).length;
       };
 
       const exportData = () => {
         const timestamp = new Date().toLocaleString();
         const projects = selectedProjects.map(p => projectTypes[p].label).join(', ');
         const combined = getCombinedItems();
-        
+
         let text = `BIDSTER CHECKLIST\n`;
         text += `==================\n`;
         if (jobName) text += `Job: ${jobName}\n`;
         if (roomDimensions) text += `Room Dimensions: ${roomDimensions}\n`;
         text += `Date: ${timestamp}\n`;
         text += `Projects: ${projects}\n`;
-        text += `Status: ${getCheckedCount()}/${combined.length} checked\n\n`;
-        
+        text += `Status: ${getCheckedCount()}/${combined.length} in scope\n\n`;
+
         combined.forEach(item => {
-          const checked = checklist[item] ? '✓' : ' ';
-          const note = notes[item] ? ` - ${notes[item]}` : '';
-          const dimensions = notes[`${item}-dimensions`] ? ` [${notes[`${item}-dimensions`]}]` : '';
-          text += `[${checked}] ${item}${dimensions}${note}\n`;
+          const name = getItemName(item);
+          const subItems = getItemSubItems(item);
+          const isChecked = checklist[name];
+          const checkMark = isChecked ? '✓' : ' ';
+          const note = notes[name] ? ` - ${notes[name]}` : '';
+          const dimensions = notes[`${name}-dimensions`] ? ` [${notes[`${name}-dimensions`]}]` : '';
+          text += `[${checkMark}] ${name}${dimensions}${note}\n`;
+
+          if (isChecked && subItems) {
+            subItems.forEach(sub => {
+              const subKey = `${name}__${sub.label}`;
+              const subData = subItemData[subKey];
+              if (sub.type === 'notes') {
+                if (subData?.value) text += `      - ${sub.label}: ${subData.value}\n`;
+              } else if (subData?.checked) {
+                const qtyStr = sub.type === 'qty' && subData?.qty ? ` (qty: ${subData.qty})` : '';
+                text += `      [x] ${sub.label}${qtyStr}\n`;
+              }
+            });
+          }
         });
-        
-        // Use Web Share API if available
+
         if (navigator.share) {
           navigator.share({
             title: 'Bidster Checklist',
             text: text
           }).catch(err => console.log('Share cancelled'));
         } else {
-          // Fallback to clipboard
           navigator.clipboard.writeText(text).then(() => {
             alert('Checklist copied to clipboard!');
           });
@@ -295,9 +406,9 @@
         const timestamp = new Date().toLocaleString();
         const projects = selectedProjects.map(p => projectTypes[p].label).join(', ');
         const combined = getCombinedItems();
-        
+
         let html = `<html><head><title>Bidster Checklist</title><style>
-          body { font-family: Arial, sans-serif; padding: 20px; }
+          body { font-family: Arial, sans-serif; padding: 20px; position: relative; min-height: 100vh; }
           h1 { margin-bottom: 10px; }
           .header { margin-bottom: 20px; }
           .item { margin-bottom: 12px; page-break-inside: avoid; }
@@ -305,31 +416,53 @@
           .checked { background: #333; }
           .item-name { font-weight: bold; }
           .notes { margin-left: 24px; font-size: 0.9em; color: #666; }
+          .subitem { margin-left: 24px; font-size: 0.85em; color: #444; margin-top: 4px; }
+          .sub-checkbox { display: inline-block; width: 12px; height: 12px; border: 1px solid #555; margin-right: 6px; background: #555; }
+          .footer { margin-top: 60px; text-align: center; font-size: 0.75em; color: #ccc; }
           @media print { body { padding: 10px; } }
         </style></head><body>`;
-        
+
         html += `<div class="header">
           <h1>BIDSTER CHECKLIST</h1>`;
         if (jobName) html += `<p><strong>Job:</strong> ${jobName}</p>`;
         if (roomDimensions) html += `<p><strong>Room Dimensions:</strong> ${roomDimensions}</p>`;
         html += `<p><strong>Date:</strong> ${timestamp}</p>
           <p><strong>Projects:</strong> ${projects}</p>
-          <p><strong>Status:</strong> ${getCheckedCount()}/${combined.length} checked</p>
+          <p><strong>Status:</strong> ${getCheckedCount()}/${combined.length} in scope</p>
         </div>`;
-        
+
         combined.forEach(item => {
-          const isChecked = checklist[item] ? 'checked' : '';
-          const note = notes[item] ? `<div class="notes">${notes[item]}</div>` : '';
-          const dimensions = notes[`${item}-dimensions`] ? `<div class="notes"><strong>Dimensions:</strong> ${notes[`${item}-dimensions`]}</div>` : '';
+          const name = getItemName(item);
+          const subItems = getItemSubItems(item);
+          const isChecked = checklist[name];
+          const isCheckedClass = isChecked ? 'checked' : '';
+          const note = notes[name] ? `<div class="notes">${notes[name]}</div>` : '';
+          const dimensions = notes[`${name}-dimensions`] ? `<div class="notes"><strong>Dimensions:</strong> ${notes[`${name}-dimensions`]}</div>` : '';
+
+          let subHtml = '';
+          if (isChecked && subItems) {
+            subItems.forEach(sub => {
+              const subKey = `${name}__${sub.label}`;
+              const subData = subItemData[subKey];
+              if (sub.type === 'notes') {
+                if (subData?.value) subHtml += `<div class="subitem">${sub.label}: ${subData.value}</div>`;
+              } else if (subData?.checked) {
+                const qtyStr = sub.type === 'qty' && subData?.qty ? ` (qty: ${subData.qty})` : '';
+                subHtml += `<div class="subitem"><span class="sub-checkbox"></span>${sub.label}${qtyStr}</div>`;
+              }
+            });
+          }
+
           html += `<div class="item">
-            <span class="checkbox ${isChecked}"></span>
-            <span class="item-name">${item}</span>
-            ${dimensions}${note}
+            <span class="checkbox ${isCheckedClass}"></span>
+            <span class="item-name">${name}</span>
+            ${dimensions}${note}${subHtml}
           </div>`;
         });
-        
+
+        html += `<div class="footer">Posch Ventures &middot; poschventures.com</div>`;
         html += `</body></html>`;
-        
+
         const printWindow = window.open('', '', 'width=800,height=600');
         printWindow.document.write(html);
         printWindow.document.close();
@@ -343,33 +476,41 @@
           setNotes({});
           setJobName('');
           setRoomDimensions('');
+          setSubItemData({});
         }
       };
 
       const combined = getCombinedItems();
       const checked = getCheckedCount();
-      const progress = combined.length > 0 ? Math.round((checked / combined.length) * 100) : 0;
 
-      // SVG Check icon
       const CheckIcon = () => (
         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
         </svg>
       );
 
-      // SVG Trash icon
+      const SmallCheckIcon = () => (
+        <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
+      );
+
       const TrashIcon = () => (
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
         </svg>
       );
 
-      // SVG Download icon
-      const DownloadIcon = () => (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-      );
+      const getNotePlaceholder = (name) => {
+        if (name.includes('rough-in') && name.includes('Plumbing')) return 'Joist direction? Water routing?';
+        if (name.includes('Windows')) return 'Qty? Size? Style? Double/triple pane?';
+        if (name.includes('Doors') && !name.includes('Interior')) return 'Qty? Style? Hardware?';
+        if (name.includes('Interior doors')) return 'Qty? Style? Hardware?';
+        if (name.includes('Shower/tub')) return 'Combo, shower-only, or tub-only? Drain location?';
+        if (name.includes('Surround')) return 'Tile (which?), vinyl, or Schlüter? Grout color?';
+        if (name.includes('Framing')) return 'Joist direction documented?';
+        return 'Add notes (measurements, details, issues...)';
+      };
 
       return (
         <div className="min-h-screen bg-slate-50 p-4 pb-20">
@@ -430,66 +571,107 @@
                 </div>
 
                 <div className="space-y-4">
-                  {combined.map((item) => (
-                    <div
-                      key={item}
-                      className="bg-white rounded-lg border border-slate-200 p-4 hover:border-slate-300 transition-colors"
-                    >
-                      <div className="flex gap-3 items-center mb-2">
-                        <button
-                          onClick={() => toggleItem(item)}
-                          className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all text-white ${
-                            checklist[item]
-                              ? 'bg-green-600 border-green-600'
-                              : 'border-slate-300 hover:border-slate-400'
-                          }`}
-                        >
-                          {checklist[item] && <CheckIcon />}
-                        </button>
-                        <span className={`text-sm transition-all ${
-                            checklist[item]
-                              ? 'font-bold text-slate-900'
-                              : 'font-normal text-slate-400'
-                          }`}>
-                          {item}
-                        </span>
+                  {combined.map((item) => {
+                    const name = getItemName(item);
+                    const subItems = getItemSubItems(item);
+                    const isChecked = checklist[name];
+
+                    return (
+                      <div
+                        key={name}
+                        className="bg-white rounded-lg border border-slate-200 p-4 hover:border-slate-300 transition-colors"
+                      >
+                        <div className="flex gap-3 items-center mb-2">
+                          <button
+                            onClick={() => toggleItem(name)}
+                            className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all text-white ${
+                              isChecked
+                                ? 'bg-green-600 border-green-600'
+                                : 'border-slate-300 hover:border-slate-400'
+                            }`}
+                          >
+                            {isChecked && <CheckIcon />}
+                          </button>
+                          <span className={`text-sm transition-all ${
+                              isChecked
+                                ? 'font-bold text-slate-900'
+                                : 'font-normal text-slate-400'
+                            }`}>
+                            {name}
+                          </span>
+                        </div>
+
+                        {isChecked && (
+                          <textarea
+                            value={notes[name] || ''}
+                            onChange={(e) => updateNote(name, e.target.value)}
+                            placeholder={getNotePlaceholder(name)}
+                            className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent resize-none"
+                            rows="2"
+                          />
+                        )}
+
+                        {isChecked && (name.includes('Shower/tub') || name.includes('Flooring') || name.includes('Vanity')) && (
+                          <input
+                            type="text"
+                            value={notes[`${name}-dimensions`] || ''}
+                            onChange={(e) => updateNote(`${name}-dimensions`, e.target.value)}
+                            placeholder={name.includes('Shower/tub') ? 'Shower dimensions (e.g., 3x5)' : name.includes('Flooring') ? 'Flooring type/details' : 'Vanity dimensions (e.g., 36" wide)'}
+                            className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent mt-2"
+                          />
+                        )}
+
+                        {isChecked && subItems && (
+                          <div className="ml-9 mt-3 space-y-2 border-l-2 border-slate-100 pl-3">
+                            {subItems.map(sub => {
+                              const subKey = `${name}__${sub.label}`;
+                              const subData = subItemData[subKey] || {};
+
+                              if (sub.type === 'notes') {
+                                return (
+                                  <div key={sub.label}>
+                                    <label className="text-xs text-slate-500 block mb-1">{sub.label}</label>
+                                    <input
+                                      type="text"
+                                      value={subData.value || ''}
+                                      onChange={(e) => updateSubItemValue(subKey, e.target.value)}
+                                      className="w-full p-1.5 text-xs border border-slate-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent"
+                                    />
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <div key={sub.label} className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => toggleSubItem(subKey)}
+                                    className={`flex-shrink-0 w-4 h-4 rounded border flex items-center justify-center text-white ${
+                                      subData.checked
+                                        ? 'bg-green-600 border-green-600'
+                                        : 'border-slate-300 hover:border-slate-400'
+                                    }`}
+                                  >
+                                    {subData.checked && <SmallCheckIcon />}
+                                  </button>
+                                  <span className="text-xs text-slate-700">{sub.label}</span>
+                                  {sub.type === 'qty' && subData.checked && (
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      value={subData.qty || ''}
+                                      onChange={(e) => updateSubItemQty(subKey, e.target.value)}
+                                      placeholder="Qty"
+                                      className="w-16 p-1 text-xs border border-slate-200 rounded ml-1 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent"
+                                    />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
-                      {checklist[item] && (
-                        <textarea
-                          value={notes[item] || ''}
-                          onChange={(e) => updateNote(item, e.target.value)}
-                          placeholder={
-                            item.includes('rough-in') || item.includes('Plumbing')
-                              ? 'Joist direction? Water routing? Supply sizes?'
-                              : item.includes('Windows')
-                              ? 'Qty? Size? Style? Double/triple pane?'
-                              : item.includes('Doors') && !item.includes('Interior')
-                              ? 'Qty? Style? Hardware?'
-                              : item.includes('Interior doors')
-                              ? 'Qty? Style? Hardware?'
-                              : item.includes('Shower/tub')
-                              ? 'Tub/shower combo, shower-only, or tub-only? Drain location?'
-                              : item.includes('Surround')
-                              ? 'Tile (which?), vinyl, or Schlüter? Grout color?'
-                              : item.includes('Framing')
-                              ? 'Blocking locations? Joist direction documented?'
-                              : 'Add notes (measurements, details, issues...)'
-                          }
-                          className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent resize-none"
-                          rows="2"
-                        />
-                      )}
-                      {checklist[item] && (item.includes('Shower/tub') || item.includes('Flooring') || item.includes('Vanity')) && (
-                        <input
-                          type="text"
-                          value={notes[`${item}-dimensions`] || ''}
-                          onChange={(e) => updateNote(`${item}-dimensions`, e.target.value)}
-                          placeholder={item.includes('Shower/tub') ? 'Shower dimensions (e.g., 3x5)' : item.includes('Flooring') ? 'Flooring type/details' : 'Vanity dimensions (e.g., 36" wide)'}
-                          className="w-full ml-9 p-2 text-xs border border-slate-200 rounded bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent mt-2"
-                        />
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="flex gap-3 mt-8 fixed bottom-6 left-4 right-4 max-w-2xl mx-auto">
