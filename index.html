@@ -20,6 +20,9 @@
       { label: 'Switches', type: 'qty' },
       { label: 'Outlets', type: 'qty' },
       { label: '220 outlets', type: 'qty' },
+      { label: 'GFCI protection (wet locations)', type: 'checkbox' },
+      { label: 'AFCI breakers (code required)', type: 'checkbox' },
+      { label: 'Smoke/CO detectors (code required?)', type: 'checkbox' },
       { label: 'Range hood', type: 'checkbox' },
       { label: 'Appliance circuits', type: 'checkbox' },
       { label: 'Panel/subpanel considerations', type: 'notes' }
@@ -38,8 +41,11 @@
       { label: 'Existing line size (upgrade needed?)', type: 'notes' },
       { label: 'Drain venting', type: 'checkbox' },
       { label: 'Exhaust fan exhaust (roof boot needed?)', type: 'checkbox' },
-      { label: 'Supply lines', type: 'qty' },
-      { label: 'Drain lines', type: 'checkbox' }
+      { label: 'Supply line size/length (main and branches)', type: 'notes' },
+      { label: 'Drain line size/length', type: 'notes' },
+      { label: 'Cleanout(s)', type: 'checkbox' },
+      { label: 'Shut-off valves (accessible)', type: 'checkbox' },
+      { label: 'Expansion tank (if WH replaced)', type: 'checkbox' }
     ];
 
     const PLUMBING_FINAL_SUB = [
@@ -49,7 +55,6 @@
       { label: 'Sinks', type: 'qty' },
       { label: 'Faucets', type: 'qty' },
       { label: 'Toilet', type: 'qty' },
-      { label: 'Exhaust fan exhaust', type: 'checkbox' },
       { label: 'Dishwasher hookup', type: 'checkbox' },
       { label: 'Dryer hookup', type: 'checkbox' }
     ];
@@ -58,7 +63,8 @@
       { label: 'Tie-in considerations', type: 'notes' },
       { label: 'Soffit framing', type: 'checkbox' },
       { label: 'Ice/water shield (slope check)', type: 'checkbox' },
-      { label: 'Roof boots (vent penetrations)', type: 'qty' }
+      { label: 'Roof boots (vent penetrations)', type: 'qty' },
+      { label: 'Flashing (window/door/wall intersections)', type: 'checkbox' }
     ];
 
     const FOUNDATION_SUB = [
@@ -75,7 +81,12 @@
       { label: 'LVP', type: 'checkbox' },
       { label: 'Hardwood', type: 'checkbox' },
       { label: 'Carpet', type: 'checkbox' },
-      { label: 'Other', type: 'notes' }
+      { label: 'Other', type: 'notes' },
+      { label: 'Waterproofing membrane (Redgard/Kerdi)', type: 'checkbox' },
+      { label: 'Schluter/edge trim', type: 'checkbox' },
+      { label: 'Grout (color/type)', type: 'notes' },
+      { label: 'Transition strips', type: 'qty' },
+      { label: 'Threshold', type: 'checkbox' }
     ];
 
     const GLASS_ENCLOSURE_SUB = [
@@ -89,9 +100,43 @@
       { label: 'Electric', type: 'checkbox' }
     ];
 
+    const SURROUND_SUB = [
+      { label: 'Waterproofing membrane (Redgard/Kerdi)', type: 'checkbox' },
+      { label: 'Schluter/edge trim', type: 'checkbox' },
+      { label: 'Grout (color/type)', type: 'notes' },
+      { label: 'Shower niche/shelf', type: 'checkbox' },
+      { label: 'Shower bench', type: 'checkbox' }
+    ];
+
     const DOORS_SUB = [
       { label: 'Door stops', type: 'qty' },
       { label: 'Hardware', type: 'notes' }
+    ];
+
+    const ADDITION_ELECTRICAL_ROUGH_SUB = [
+      { label: 'Switches', type: 'qty' },
+      { label: 'Outlets', type: 'qty' },
+      { label: '220 outlets', type: 'qty' },
+      { label: 'GFCI protection (wet locations)', type: 'checkbox' },
+      { label: 'AFCI breakers (code required)', type: 'checkbox' },
+      { label: 'Smoke/CO detectors (code required?)', type: 'checkbox' },
+      { label: 'New circuit wiring (tie into existing or new run?)', type: 'notes' },
+      { label: 'Existing panel adequate for added load?', type: 'notes' },
+      { label: 'Subpanel needed?', type: 'checkbox' },
+      { label: 'Range hood', type: 'checkbox' },
+      { label: 'Appliance circuits', type: 'checkbox' }
+    ];
+
+    const ADDITION_PLUMBING_ROUGH_SUB = [
+      { label: 'Existing line size (upgrade needed?)', type: 'notes' },
+      { label: 'Existing water pressure adequate for added fixtures?', type: 'notes' },
+      { label: 'Tie into existing lines or new run?', type: 'notes' },
+      { label: 'Drain venting', type: 'checkbox' },
+      { label: 'Supply line size/length (main and branches)', type: 'notes' },
+      { label: 'Drain line size/length', type: 'notes' },
+      { label: 'Cleanout(s)', type: 'checkbox' },
+      { label: 'Shut-off valves (accessible)', type: 'checkbox' },
+      { label: 'Expansion tank (if WH replaced)', type: 'checkbox' }
     ];
 
     const HVAC_ROUGH_SUB = [
@@ -142,19 +187,19 @@
             'Framing',
             'Roof tie-in',
             'Windows',
-            'Plumbing rough-in',
-            'Electrical rough-in',
-            'HVAC rough-in',
+            { name: 'Plumbing rough-in', subItems: ADDITION_PLUMBING_ROUGH_SUB },
+            { name: 'Electrical rough-in', subItems: ADDITION_ELECTRICAL_ROUGH_SUB },
+            { name: 'HVAC rough-in', subItems: HVAC_ROUGH_SUB },
             'Insulation',
             'Siding/Fascia/Soffit',
             'Drywall',
             'Paint',
-            'Flooring',
-            'Electrical final',
+            { name: 'Flooring', subItems: FLOORING_SUB },
+            { name: 'Electrical final', subItems: ELECTRICAL_FINAL_SUB },
             'HVAC final',
-            'Plumbing final',
+            { name: 'Plumbing final', subItems: PLUMBING_FINAL_SUB },
             'Trim',
-            'Interior doors'
+            { name: 'Interior doors', subItems: DOORS_SUB }
           ]
         },
         garage: {
@@ -216,7 +261,7 @@
             'Drywall/backer board',
             'Paint',
             'Shower/tub rough-in',
-            'Surround (tile/vinyl/schluter)',
+            { name: 'Surround (tile/vinyl/schluter)', subItems: SURROUND_SUB },
             { name: 'Glass enclosure', subItems: GLASS_ENCLOSURE_SUB },
             'Caulk/grout lines',
             'Toilet',
