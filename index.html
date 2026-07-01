@@ -20,9 +20,9 @@
       { label: 'Switches', type: 'qty' },
       { label: 'Outlets', type: 'qty' },
       { label: '220 outlets', type: 'qty' },
-      { label: 'GFCI protection (wet locations)', type: 'checkbox' },
-      { label: 'AFCI breakers (code required)', type: 'checkbox' },
-      { label: 'Smoke/CO detectors (code required?)', type: 'checkbox' },
+      { label: 'GFCI protection (wet locations)', type: 'qty' },
+      { label: 'AFCI breakers (code required)', type: 'qty' },
+      { label: 'Smoke/CO detectors (code required?)', type: 'qty' },
       { label: 'Range hood', type: 'checkbox' },
       { label: 'Appliance circuits', type: 'checkbox' },
       { label: 'Panel/subpanel considerations', type: 'notes' }
@@ -38,13 +38,11 @@
     ];
 
     const PLUMBING_ROUGH_SUB = [
-      { label: 'Existing line size (upgrade needed?)', type: 'notes' },
+      { label: 'Supply line - existing, adequate, or need upgrade?', type: 'notes' },
+      { label: 'Drain line - existing, adequate, or need upgrade?', type: 'notes' },
       { label: 'Drain venting', type: 'checkbox' },
       { label: 'Exhaust fan exhaust (roof boot needed?)', type: 'checkbox' },
-      { label: 'Supply line size/length (main and branches)', type: 'notes' },
-      { label: 'Drain line size/length', type: 'notes' },
       { label: 'Cleanout(s)', type: 'checkbox' },
-      { label: 'Shut-off valves (accessible)', type: 'checkbox' },
       { label: 'Expansion tank (if WH replaced)', type: 'checkbox' }
     ];
 
@@ -82,11 +80,17 @@
       { label: 'Hardwood', type: 'checkbox' },
       { label: 'Carpet', type: 'checkbox' },
       { label: 'Other', type: 'notes' },
-      { label: 'Waterproofing membrane (Redgard/Kerdi)', type: 'checkbox' },
-      { label: 'Schluter/edge trim', type: 'checkbox' },
       { label: 'Grout (color/type)', type: 'notes' },
       { label: 'Transition strips', type: 'qty' },
       { label: 'Threshold', type: 'checkbox' }
+    ];
+
+    const DRYWALL_SUB = [
+      { label: 'Waterproofing membrane (Redgard/Kerdi)', type: 'checkbox' }
+    ];
+
+    const GARAGE_DOOR_SUB = [
+      { label: 'Garage door opener', type: 'checkbox' }
     ];
 
     const GLASS_ENCLOSURE_SUB = [
@@ -167,11 +171,11 @@
             'Insulation',
             'Siding/Fascia/Soffit',
             'Gutters/Downspouts',
-            'Drywall',
+            { name: 'Drywall', subItems: DRYWALL_SUB },
             'Paint',
             'Kitchen cabinets/counters',
             { name: 'Flooring', subItems: FLOORING_SUB },
-            'Garage door opener',
+            { name: 'Garage door', subItems: GARAGE_DOOR_SUB },
             { name: 'Electrical final', subItems: ELECTRICAL_FINAL_SUB },
             'HVAC final',
             { name: 'Plumbing final', subItems: PLUMBING_FINAL_SUB },
@@ -192,7 +196,7 @@
             { name: 'HVAC rough-in', subItems: HVAC_ROUGH_SUB },
             'Insulation',
             'Siding/Fascia/Soffit',
-            'Drywall',
+            { name: 'Drywall', subItems: DRYWALL_SUB },
             'Paint',
             { name: 'Flooring', subItems: FLOORING_SUB },
             { name: 'Electrical final', subItems: ELECTRICAL_FINAL_SUB },
@@ -214,14 +218,13 @@
             'Plumbing rough-in',
             'HVAC rough-in',
             'Insulation',
-            'Drywall',
+            { name: 'Drywall', subItems: DRYWALL_SUB },
             'Paint',
             'Trim',
             'Electrical final',
             'Plumbing final',
             'HVAC final',
-            'Garage door',
-            'Garage door opener',
+            { name: 'Garage door', subItems: GARAGE_DOOR_SUB },
             'Man door'
           ]
         },
@@ -234,7 +237,7 @@
             { name: 'Electrical rough-in', subItems: ELECTRICAL_ROUGH_SUB },
             { name: 'HVAC rough-in', subItems: HVAC_ROUGH_SUB },
             'Framing',
-            'Drywall',
+            { name: 'Drywall', subItems: DRYWALL_SUB },
             'Paint',
             'Cabinets',
             'Countertop',
@@ -258,7 +261,7 @@
             { name: 'Plumbing rough-in', subItems: PLUMBING_ROUGH_SUB },
             { name: 'Electrical rough-in', subItems: ELECTRICAL_ROUGH_SUB },
             'Insulation',
-            'Drywall/backer board',
+            { name: 'Drywall/backer board', subItems: DRYWALL_SUB },
             'Paint',
             'Shower/tub rough-in',
             { name: 'Surround (tile/vinyl/schluter)', subItems: SURROUND_SUB },
@@ -290,7 +293,7 @@
             'HVAC rough-in',
             'Fire caulking',
             'Insulation',
-            'Drywall',
+            { name: 'Drywall', subItems: DRYWALL_SUB },
             'Paint',
             'Acoustical ceiling grid',
             'Flooring',
@@ -314,7 +317,7 @@
             'HVAC rough-in',
             'Fire caulking',
             'Insulation',
-            'Drywall',
+            { name: 'Drywall', subItems: DRYWALL_SUB },
             'Paint',
             'Acoustical ceiling grid',
             'Flooring',
