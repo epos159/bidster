@@ -21,8 +21,8 @@
       { label: 'Outlets', type: 'qty' },
       { label: '220 outlets', type: 'qty' },
       { label: 'GFCI protection (wet locations)', type: 'qty' },
-      { label: 'AFCI breakers (code required)', type: 'qty' },
-      { label: 'Smoke/CO detectors (code required?)', type: 'qty' },
+      { label: 'AFCI breakers', type: 'qty' },
+      { label: 'Smoke/CO detectors', type: 'qty' },
       { label: 'Range hood', type: 'checkbox' },
       { label: 'Appliance circuits', type: 'checkbox' },
       { label: 'Panel/subpanel considerations', type: 'notes' }
@@ -47,9 +47,10 @@
     ];
 
     const PLUMBING_FINAL_SUB = [
-      { label: 'Shower (drain location)', type: 'notes' },
-      { label: 'Tub (drain location)', type: 'notes' },
-      { label: 'Shower/Tub combo (drain location)', type: 'notes' },
+      { label: 'Shower (drain location)', type: 'select', options: ['Left', 'Center', 'Right'] },
+      { label: 'Tub (drain location)', type: 'select', options: ['Left', 'Center', 'Right'] },
+      { label: 'Shower/Tub combo (drain location)', type: 'select', options: ['Left', 'Center', 'Right'] },
+      { label: 'Shower pan (tile, standalone shower)', type: 'checkbox' },
       { label: 'Sinks', type: 'qty' },
       { label: 'Faucets', type: 'qty' },
       { label: 'Toilet', type: 'qty' },
@@ -75,12 +76,11 @@
     ];
 
     const FLOORING_SUB = [
-      { label: 'Tile', type: 'checkbox' },
+      { label: 'Tile/Grout (color/type)', type: 'notes' },
       { label: 'LVP', type: 'checkbox' },
       { label: 'Hardwood', type: 'checkbox' },
       { label: 'Carpet', type: 'checkbox' },
       { label: 'Other', type: 'notes' },
-      { label: 'Grout (color/type)', type: 'notes' },
       { label: 'Transition strips', type: 'qty' },
       { label: 'Threshold', type: 'checkbox' }
     ];
@@ -107,9 +107,10 @@
     const SURROUND_SUB = [
       { label: 'Waterproofing membrane (Redgard/Kerdi)', type: 'checkbox' },
       { label: 'Schluter/edge trim', type: 'checkbox' },
-      { label: 'Grout (color/type)', type: 'notes' },
+      { label: 'Tile/Grout (color/type)', type: 'notes' },
       { label: 'Shower niche/shelf', type: 'checkbox' },
-      { label: 'Shower bench', type: 'checkbox' }
+      { label: 'Shower bench', type: 'checkbox' },
+      { label: 'Shower pan (tile)', type: 'checkbox' }
     ];
 
     const DOORS_SUB = [
@@ -121,9 +122,9 @@
       { label: 'Switches', type: 'qty' },
       { label: 'Outlets', type: 'qty' },
       { label: '220 outlets', type: 'qty' },
-      { label: 'GFCI protection (wet locations)', type: 'checkbox' },
-      { label: 'AFCI breakers (code required)', type: 'checkbox' },
-      { label: 'Smoke/CO detectors (code required?)', type: 'checkbox' },
+      { label: 'GFCI protection (wet locations)', type: 'qty' },
+      { label: 'AFCI breakers', type: 'qty' },
+      { label: 'Smoke/CO detectors', type: 'qty' },
       { label: 'New circuit wiring (tie into existing or new run?)', type: 'notes' },
       { label: 'Existing panel adequate for added load?', type: 'notes' },
       { label: 'Subpanel needed?', type: 'checkbox' },
@@ -131,16 +132,12 @@
       { label: 'Appliance circuits', type: 'checkbox' }
     ];
 
-    const ADDITION_PLUMBING_ROUGH_SUB = [
-      { label: 'Existing line size (upgrade needed?)', type: 'notes' },
-      { label: 'Existing water pressure adequate for added fixtures?', type: 'notes' },
-      { label: 'Tie into existing lines or new run?', type: 'notes' },
-      { label: 'Drain venting', type: 'checkbox' },
+    const CUSTOM_HOME_PLUMBING_ROUGH_SUB = [
       { label: 'Supply line size/length (main and branches)', type: 'notes' },
       { label: 'Drain line size/length', type: 'notes' },
-      { label: 'Cleanout(s)', type: 'checkbox' },
-      { label: 'Shut-off valves (accessible)', type: 'checkbox' },
-      { label: 'Expansion tank (if WH replaced)', type: 'checkbox' }
+      { label: 'Drain venting', type: 'checkbox' },
+      { label: 'Exhaust fan exhaust (roof boot needed?)', type: 'checkbox' },
+      { label: 'Cleanout(s)', type: 'checkbox' }
     ];
 
     const HVAC_ROUGH_SUB = [
@@ -163,7 +160,7 @@
             'Windows',
             { name: 'Doors (exterior)', subItems: DOORS_SUB },
             'Backfill/Grading',
-            { name: 'Plumbing rough-in', subItems: PLUMBING_ROUGH_SUB },
+            { name: 'Plumbing rough-in', subItems: CUSTOM_HOME_PLUMBING_ROUGH_SUB },
             { name: 'Roofing', subItems: ROOFING_SUB },
             { name: 'Electrical rough-in', subItems: ELECTRICAL_ROUGH_SUB },
             { name: 'HVAC rough-in', subItems: HVAC_ROUGH_SUB },
@@ -454,7 +451,7 @@
             subItems.forEach(sub => {
               const subKey = `${name}__${sub.label}`;
               const subData = subItemData[subKey];
-              if (sub.type === 'notes') {
+              if (sub.type === 'notes' || sub.type === 'select') {
                 if (subData?.value) text += `      - ${sub.label}: ${subData.value}\n`;
               } else if (subData?.checked) {
                 const qtyStr = sub.type === 'qty' && subData?.qty ? ` (qty: ${subData.qty})` : '';
@@ -518,7 +515,7 @@
             subItems.forEach(sub => {
               const subKey = `${name}__${sub.label}`;
               const subData = subItemData[subKey];
-              if (sub.type === 'notes') {
+              if (sub.type === 'notes' || sub.type === 'select') {
                 if (subData?.value) subHtml += `<div class="subitem">${sub.label}: ${subData.value}</div>`;
               } else if (subData?.checked) {
                 const qtyStr = sub.type === 'qty' && subData?.qty ? ` (qty: ${subData.qty})` : '';
@@ -702,6 +699,29 @@
                             {subItems.map(sub => {
                               const subKey = `${name}__${sub.label}`;
                               const subData = subItemData[subKey] || {};
+
+                              if (sub.type === 'select') {
+                                return (
+                                  <div key={sub.label}>
+                                    <label className="text-xs text-slate-500 block mb-1">{sub.label}</label>
+                                    <div className="flex gap-1">
+                                      {sub.options.map(opt => (
+                                        <button
+                                          key={opt}
+                                          onClick={() => updateSubItemValue(subKey, opt)}
+                                          className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                            subData.value === opt
+                                              ? 'bg-green-600 border-green-600 text-white'
+                                              : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                                          }`}
+                                        >
+                                          {opt}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              }
 
                               if (sub.type === 'notes') {
                                 return (
