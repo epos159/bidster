@@ -486,68 +486,126 @@
         }
       };
 
+      const printStyles = `
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; padding: 16px; color: #1B2A3A; background: white; }
+        @page { margin: 0.5in; }
+        .tb { border: 2px solid #1B2A3A; margin-bottom: 16px; }
+        .tb-row { display: flex; border-top: 1.5px solid #1B2A3A; }
+        .tb-row:first-child { border-top: none; }
+        .tb-cell { padding: 6px 8px; flex: 1; }
+        .tb-cell + .tb-cell { border-left: 1.5px solid #1B2A3A; }
+        .tb-label { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: #999; font-weight: 600; }
+        .tb-value { font-size: 13px; font-weight: 600; margin-top: 2px; }
+        .brand { font-size: 18px; font-weight: 800; letter-spacing: 0.02em; padding: 8px; }
+        .item-group { border-bottom: 1px solid #ddd; padding: 8px 0; page-break-inside: avoid; }
+        .item-check { display: inline-block; width: 16px; height: 16px; border: 1.5px solid #1B2A3A; margin-right: 6px; vertical-align: middle; }
+        .item-check-filled { display: inline-block; width: 16px; height: 16px; border: 1.5px solid #1B2A3A; background: #1B2A3A; margin-right: 6px; vertical-align: middle; }
+        .item-name { font-weight: 600; font-size: 13px; display: inline; }
+        .item-line { margin-top: 4px; height: 18px; border-bottom: 1px solid #ccc; margin-left: 24px; }
+        .item-value { margin-top: 4px; margin-left: 24px; font-size: 12px; color: #333; }
+        .subitem-group { margin-left: 24px; margin-top: 5px; }
+        .subitem-check { display: inline-block; width: 12px; height: 12px; border: 1px solid #666; margin-right: 4px; vertical-align: middle; }
+        .subitem-check-filled { display: inline-block; width: 12px; height: 12px; border: 1px solid #666; background: #444; margin-right: 4px; vertical-align: middle; }
+        .subitem-name { font-size: 11px; display: inline; color: #555; }
+        .subitem-line { height: 14px; border-bottom: 1px solid #e5e5e5; margin-left: 20px; margin-top: 2px; }
+        .subitem-value { font-size: 11px; color: #333; margin-left: 20px; margin-top: 2px; }
+        .footer { margin-top: 24px; text-align: center; font-size: 9px; color: #999; letter-spacing: 0.08em; text-transform: uppercase; border-top: 1px solid #ddd; padding-top: 12px; }
+      `;
+
+      const buildTitleBlock = (title, timestamp, projects) => `
+        <div class="tb">
+          <div class="tb-row"><div class="brand">${title}</div></div>
+          <div class="tb-row">
+            <div class="tb-cell" style="flex: 1.5"><span class="tb-label">Job</span><div class="tb-value">${jobName || '—'}</div></div>
+            <div class="tb-cell"><span class="tb-label">Dimensions</span><div class="tb-value">${roomDimensions || '—'}</div></div>
+            <div class="tb-cell"><span class="tb-label">Date</span><div class="tb-value">${timestamp}</div></div>
+          </div>
+          <div class="tb-row">
+            <div class="tb-cell"><span class="tb-label">Projects</span><div class="tb-value">${projects}</div></div>
+          </div>
+        </div>`;
+
+      const openPrintWindow = (html) => {
+        const w = window.open('', '', 'width=850,height=600');
+        w.document.write(html);
+        w.document.close();
+        setTimeout(() => w.print(), 250);
+      };
+
+      // Print only checked items with any filled-in details
       const printData = () => {
         const timestamp = new Date().toLocaleString();
         const projects = selectedProjects.map(p => projectTypes[p].label).join(', ');
-        let html = `<html><head><title>Bidster Checklist</title><style>
-          body { font-family: Arial, sans-serif; padding: 24px; color: #1B2A3A; }
-          .tb { border: 2px solid #1B2A3A; margin-bottom: 20px; }
-          .tb-row { display: flex; border-top: 1.5px solid #1B2A3A; }
-          .tb-row:first-child { border-top: none; }
-          .tb-cell { padding: 6px 10px; flex: 1; }
-          .tb-cell + .tb-cell { border-left: 1.5px solid #1B2A3A; }
-          .tb-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #6b7280; display:block; }
-          .tb-value { font-size: 14px; font-weight: 600; }
-          .brand { font-size: 20px; font-weight: 800; letter-spacing: 0.02em; padding: 8px 10px; }
-          .item { margin-bottom: 10px; page-break-inside: avoid; }
-          .checkbox { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #1B2A3A; margin-right: 8px; vertical-align: -2px; }
-          .checked { background: #1B2A3A; }
-          .item-name { font-weight: 600; font-size: 14px; }
-          .notes { margin-left: 24px; font-size: 12px; color: #555; }
-          .subitem { margin-left: 24px; font-size: 12px; color: #333; margin-top: 3px; }
-          .sub-box { display: inline-block; width: 10px; height: 10px; border: 1px solid #444; background: #444; margin-right: 6px; }
-          .footer { margin-top: 48px; text-align: center; font-size: 10px; color: #b9b5ac; letter-spacing: 0.08em; text-transform: uppercase; }
-        </style></head><body>`;
-        html += `<div class="tb">
-          <div class="tb-row"><div class="brand">BIDSTER — FIELD CHECKLIST</div></div>
-          <div class="tb-row">
-            <div class="tb-cell"><span class="tb-label">Job</span><span class="tb-value">${jobName || '—'}</span></div>
-            <div class="tb-cell"><span class="tb-label">Dimensions</span><span class="tb-value">${roomDimensions || '—'}</span></div>
-          </div>
-          <div class="tb-row">
-            <div class="tb-cell"><span class="tb-label">Projects</span><span class="tb-value">${projects}</span></div>
-            <div class="tb-cell"><span class="tb-label">Date</span><span class="tb-value">${timestamp}</span></div>
-            <div class="tb-cell"><span class="tb-label">In scope</span><span class="tb-value">${checkedCount}/${combined.length}</span></div>
-          </div>
-        </div>`;
+        let html = `<html><head><title>Bidster Checklist</title><style>${printStyles}</style></head><body>`;
+        html += buildTitleBlock('BIDSTER — FIELD CHECKLIST', timestamp, projects);
         combined.forEach(item => {
           const name = getItemName(item);
           const subItems = getItemSubItems(item);
           const isChecked = checklist[name];
-          let subHtml = '';
-          if (isChecked && subItems) {
+          if (!isChecked) return;
+          html += `<div class="item-group">
+            <div><span class="item-check-filled"></span><span class="item-name">${name}</span></div>`;
+          if (notes[name]) html += `<div class="item-value">${notes[name]}</div>`;
+          if (subItems) {
             subItems.forEach(sub => {
-              const subData = subItemData[`${name}__${sub.label}`];
-              if (sub.type === 'notes' || sub.type === 'select') {
-                if (subData?.value) subHtml += `<div class="subitem">${sub.label}: ${subData.value}</div>`;
-              } else if (subData?.checked) {
-                const qtyStr = sub.type === 'qty' && subData?.qty ? ` (qty: ${subData.qty})` : '';
-                subHtml += `<div class="subitem"><span class="sub-box"></span>${sub.label}${qtyStr}</div>`;
+              const subData = subItemData[`${name}__${sub.label}`] || {};
+              if (sub.type === 'select') {
+                if (subData.value) {
+                  html += `<div class="subitem-group"><div class="subitem-name">${sub.label}: <strong>${subData.value}</strong></div></div>`;
+                }
+              } else if (sub.type === 'notes') {
+                if (subData.value) {
+                  html += `<div class="subitem-group"><div class="subitem-name">${sub.label}</div><div class="subitem-value">${subData.value}</div></div>`;
+                }
+              } else if (subData.checked) {
+                const qtyStr = sub.type === 'qty' && subData.qty ? ` — qty: ${subData.qty}` : '';
+                html += `<div class="subitem-group"><div><span class="subitem-check-filled"></span><span class="subitem-name">${sub.label}${qtyStr}</span></div></div>`;
               }
             });
           }
-          html += `<div class="item">
-            <span class="checkbox ${isChecked ? 'checked' : ''}"></span>
-            <span class="item-name">${name}</span>
-            ${notes[name] ? `<div class="notes">${notes[name]}</div>` : ''}
-            ${subHtml}
-          </div>`;
+          html += `</div>`;
         });
         html += `<div class="footer">Bidster · A Posch Ventures Tool · poschventures.com</div></body></html>`;
-        const w = window.open('', '', 'width=800,height=600');
-        w.document.write(html);
-        w.document.close();
-        setTimeout(() => w.print(), 250);
+        openPrintWindow(html);
+      };
+
+      // Print blank template — all items and sub-items expanded with blank lines for handwriting
+      const printTemplate = () => {
+        const timestamp = new Date().toLocaleString();
+        const projects = selectedProjects.map(p => projectTypes[p].label).join(', ');
+        let html = `<html><head><title>Bidster — Blank Template</title><style>${printStyles}</style></head><body>`;
+        html += buildTitleBlock('BIDSTER — BLANK PRINT TEMPLATE', timestamp, projects);
+        combined.forEach(item => {
+          const name = getItemName(item);
+          const subItems = getItemSubItems(item);
+          html += `<div class="item-group">
+            <div><span class="item-check"></span><span class="item-name">${name}</span></div>
+            <div class="item-line"></div>`;
+          if (subItems) {
+            subItems.forEach(sub => {
+              if (sub.type === 'select') {
+                html += `<div class="subitem-group">
+                  <div class="subitem-name">${sub.label}: <span style="color:#aaa; font-size:10px;">${sub.options.join(' / ')}</span></div>
+                  <div class="subitem-line"></div>
+                </div>`;
+              } else if (sub.type === 'notes') {
+                html += `<div class="subitem-group">
+                  <div class="subitem-name">${sub.label}</div>
+                  <div class="subitem-line"></div>
+                </div>`;
+              } else {
+                html += `<div class="subitem-group">
+                  <div><span class="subitem-check"></span><span class="subitem-name">${sub.label}</span></div>
+                  <div class="subitem-line"></div>
+                </div>`;
+              }
+            });
+          }
+          html += `</div>`;
+        });
+        html += `<div class="footer">Bidster · A Posch Ventures Tool · poschventures.com</div></body></html>`;
+        openPrintWindow(html);
       };
 
       const clearAll = () => {
@@ -780,6 +838,14 @@
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6 18.25m0-4.421l.72.096m10.56 0l.72-.096m-.72.096L18 18.25m-1.44-4.517c.24.03.48.062.72.096m-12 0V9.75A2.25 2.25 0 017.53 7.5h8.94a2.25 2.25 0 012.25 2.25v4.079" />
                   </svg>
                   PRINT
+                </button>
+                <button onClick={printTemplate}
+                  className="display flex-1 py-3.5 text-base font-bold tracking-widest border-2 transition-colors flex items-center justify-center gap-2"
+                  style={{background:'#fff', borderColor:'rgba(27,42,58,0.35)', color:'var(--ink)'}}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                  </svg>
+                  BLANK
                 </button>
                 <button onClick={clearAll}
                   className="flex-shrink-0 px-4 border-2 transition-colors"
