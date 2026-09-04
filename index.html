@@ -499,14 +499,14 @@
         .tb-value { font-size: 13px; font-weight: 600; margin-top: 2px; }
         .brand { font-size: 18px; font-weight: 800; letter-spacing: 0.02em; padding: 8px; }
         .item-group { border-bottom: 1px solid #ddd; padding: 8px 0; page-break-inside: avoid; }
-        .item-check { display: inline-block; width: 16px; height: 16px; border: 1.5px solid #1B2A3A; margin-right: 6px; vertical-align: middle; }
-        .item-check-filled { display: inline-block; width: 16px; height: 16px; border: 1.5px solid #1B2A3A; background: #1B2A3A; margin-right: 6px; vertical-align: middle; }
+        .item-check { display: inline-block; width: 16px; height: 16px; border: 1.5px solid #1B2A3A; margin-right: 6px; vertical-align: middle; text-align: center; line-height: 14px; font-size: 12px; }
+        .item-check-filled { display: inline-block; width: 16px; height: 16px; border: 1.5px solid #1B2A3A; margin-right: 6px; vertical-align: middle; text-align: center; line-height: 14px; font-size: 12px; color: #1B2A3A; font-weight: bold; }
         .item-name { font-weight: 600; font-size: 13px; display: inline; }
         .item-line { margin-top: 4px; height: 18px; border-bottom: 1px solid #ccc; margin-left: 24px; }
         .item-value { margin-top: 4px; margin-left: 24px; font-size: 12px; color: #333; }
         .subitem-group { margin-left: 24px; margin-top: 5px; }
-        .subitem-check { display: inline-block; width: 12px; height: 12px; border: 1px solid #666; margin-right: 4px; vertical-align: middle; }
-        .subitem-check-filled { display: inline-block; width: 12px; height: 12px; border: 1px solid #666; background: #444; margin-right: 4px; vertical-align: middle; }
+        .subitem-check { display: inline-block; width: 12px; height: 12px; border: 1px solid #666; margin-right: 4px; vertical-align: middle; text-align: center; line-height: 11px; font-size: 10px; }
+        .subitem-check-filled { display: inline-block; width: 12px; height: 12px; border: 1px solid #666; margin-right: 4px; vertical-align: middle; text-align: center; line-height: 11px; font-size: 10px; color: #333; font-weight: bold; }
         .subitem-name { font-size: 11px; display: inline; color: #555; }
         .subitem-line { height: 14px; border-bottom: 1px solid #e5e5e5; margin-left: 20px; margin-top: 2px; }
         .subitem-value { font-size: 11px; color: #333; margin-left: 20px; margin-top: 2px; }
@@ -545,7 +545,7 @@
           const isChecked = checklist[name];
           if (!isChecked) return;
           html += `<div class="item-group">
-            <div><span class="item-check-filled"></span><span class="item-name">${name}</span></div>`;
+            <div><span class="item-check-filled">&#10003;</span><span class="item-name">${name}</span></div>`;
           if (notes[name]) html += `<div class="item-value">${notes[name]}</div>`;
           if (subItems) {
             subItems.forEach(sub => {
@@ -560,7 +560,7 @@
                 }
               } else if (subData.checked) {
                 const qtyStr = sub.type === 'qty' && subData.qty ? ` — qty: ${subData.qty}` : '';
-                html += `<div class="subitem-group"><div><span class="subitem-check-filled"></span><span class="subitem-name">${sub.label}${qtyStr}</span></div></div>`;
+                html += `<div class="subitem-group"><div><span class="subitem-check-filled">&#10003;</span><span class="subitem-name">${sub.label}${qtyStr}</span></div></div>`;
               }
             });
           }
